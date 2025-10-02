@@ -18,4 +18,4 @@ CareerBuddy is a one-stop personalized career & education advisor designed for s
 - AI chatbot integration
 
 ## Presentation
-You can view our full Hackathon presentation [here](docs/S15_SIH_final.pdf).
+You can view our full Hackathon presentation [here](/S15_SIH_final.pdf).
