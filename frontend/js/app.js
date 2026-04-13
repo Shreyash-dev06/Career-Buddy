@@ -311,12 +311,62 @@ function loadComponent(file, placeholderId, callback) {
   }
 
   fetch(file)
-    .then(res => res.text())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status} while loading ${file}`);
+      }
+      return res.text();
+    })
     .then(data => {
       placeholder.innerHTML = data;
       if (callback) callback();
     })
     .catch(err => console.error("❌ Error loading component:", file, err));
+}
+
+function getProjectBasePath() {
+  const { pathname } = window.location;
+  if (pathname.includes("/frontend/")) {
+    return pathname.split("/frontend/")[0] || "";
+  }
+  return pathname.replace(/\/[^/]*$/, "");
+}
+
+function getComponentPath(componentFile) {
+  return buildSitePath(`frontend/html/components/${componentFile}`);
+}
+
+function buildSitePath(relativePath) {
+  const base = getProjectBasePath();
+  return `${base}/${relativePath}`.replace(/\/{2,}/g, "/");
+}
+
+function fixNavigationLinks(root = document) {
+  const routeMap = {
+    "index.html": "index.html",
+    "quiz.html": "frontend/html/quiz.html",
+    "careers.html": "frontend/html/careers.html",
+    "colleges.html": "frontend/html/colleges.html",
+    "scholarships.html": "frontend/html/scholarships.html",
+    "jobs.html": "frontend/html/jobs.html",
+    "exam.html": "frontend/html/exam.html",
+    "skills.html": "frontend/html/skills.html",
+    "profile.html": "frontend/html/profile.html",
+  };
+
+  root.querySelectorAll("a[href]").forEach((link) => {
+    const href = link.getAttribute("href");
+    if (href && routeMap[href]) {
+      link.setAttribute("href", buildSitePath(routeMap[href]));
+    }
+  });
+
+  root.querySelectorAll("img[src]").forEach((image) => {
+    const src = image.getAttribute("src");
+    if (src === "../assets/logo.png") {
+      image.setAttribute("src", buildSitePath("frontend/assets/logo.png"));
+    }
+  });
 }
 
 // ✅ Render user info in header
@@ -570,18 +620,20 @@ function initNavbar() {
 // DOM Ready
 document.addEventListener("DOMContentLoaded", () => {
   // Header
-  loadComponent("../html/components/header.html", "header-placeholder", () => {
+  loadComponent(getComponentPath("header.html"), "header-placeholder", () => {
+    const headerRoot = document.getElementById("header-placeholder");
+    fixNavigationLinks(headerRoot || document);
     renderHeaderUserInfo();
     initNavbar();
     window.addEventListener("storage", renderHeaderUserInfo);
   });
 
   // Footer, modal, chatbot
-  loadComponent("../html/components/footer.html", "footer-placeholder");
-  loadComponent("../html/components/auth-modal.html", "modal-placeholder", () => {
+  loadComponent(getComponentPath("footer.html"), "footer-placeholder");
+  loadComponent(getComponentPath("auth-modal.html"), "modal-placeholder", () => {
     initAuthModal();
   });
-  loadComponent("../html/components/chatbot-widget.html", "chatbot-placeholder", () => {
+  loadComponent(getComponentPath("chatbot-widget.html"), "chatbot-placeholder", () => {
     if (typeof initChatbot === "function") initChatbot();
   });
 
