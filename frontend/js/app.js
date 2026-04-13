@@ -574,10 +574,43 @@ function resolveComponentPath(filename) {
   return prefix + "frontend/html/components/" + filename;
 }
 
+// ✅ Fix header logo image and nav links based on current page depth
+function fixHeaderLinks() {
+  const depth = window.location.pathname.replace(/\/[^/]*$/, "").split("/").filter(Boolean).length;
+  const prefix = depth > 0 ? "../".repeat(depth) : "";
+
+  // Fix logo image src
+  const logoImg = document.querySelector(".navbar .logo-img");
+  if (logoImg) {
+    logoImg.src = prefix + "frontend/assets/logo.png";
+  }
+
+  // Map header hrefs → correct depth-aware paths
+  const pageLinks = {
+    "index.html": prefix + "index.html",
+    "quiz.html": prefix + "frontend/html/quiz.html",
+    "careers.html": prefix + "frontend/html/careers.html",
+    "colleges.html": prefix + "frontend/html/colleges.html",
+    "scholarships.html": prefix + "frontend/html/scholarships.html",
+    "jobs.html": prefix + "frontend/html/jobs.html",
+    "exam.html": prefix + "frontend/html/exam.html",
+    "skills.html": prefix + "frontend/html/skills.html",
+    "profile.html": prefix + "frontend/html/profile.html",
+  };
+
+  document.querySelectorAll(".navbar a, .mobile-menu a").forEach((link) => {
+    const href = link.getAttribute("href");
+    if (href && href in pageLinks) {
+      link.setAttribute("href", pageLinks[href]);
+    }
+  });
+}
+
 // DOM Ready
 document.addEventListener("DOMContentLoaded", () => {
   // Header
   loadComponent(resolveComponentPath("header.html"), "header-placeholder", () => {
+    fixHeaderLinks();
     renderHeaderUserInfo();
     initNavbar();
     window.addEventListener("storage", renderHeaderUserInfo);
