@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const user = getUser();
 
   if (!user) {
-    alert("Sign In to access Your profile")
+    alert("Sign In to access Your profile");
     window.location.href = "index.html";
     return;
   }
@@ -143,16 +143,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (el) el.innerText = value;
   };
 
-  setText("profile-name", user?.name || "Guest User");
-  setText("profile-email", user?.email || "guest@example.com");
-  setText("profile-gender", user?.gender || "Not specified");
-  setText("profile-age", user?.age || "Not specified");
-  setText("profile-class", user?.class || "Not specified");
-  setText("profile-stream", user?.stream || "Not decided");
-  setText("profile-interests", user?.interests || "Not provided");
-  setText("profile-careerGoal", user?.careerGoal || "Not specified");
-  setText("profile-skills", user?.skills || "Not provided");
-  setText("profile-location", user?.location || "Not specified");
+  function refreshProfile() {
+    const u = getUser();
+    if (!u) return;
+    setText("profile-name", u.name || "Guest User");
+    setText("profile-email", u.email || "guest@example.com");
+    setText("profile-gender", u.gender || "Not specified");
+    setText("profile-age", u.age || "Not specified");
+    setText("profile-class", u.class || "Not specified");
+    setText("profile-stream", u.stream || "Not decided");
+    setText("profile-interests", u.interests || "Not provided");
+    setText("profile-careerGoal", u.careerGoal || "Not specified");
+    setText("profile-skills", u.skills || "Not provided");
+    setText("profile-location", u.location || "Not specified");
+  }
+
+  refreshProfile();
+
+  document.addEventListener("profileUpdated", refreshProfile);
 
   const editBtn = document.getElementById("edit-profile-btn");
   if (editBtn) {
@@ -161,33 +169,23 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!modal) return;
       modal.classList.remove("hidden");
 
+      const currentUser = getUser();
+
       const setInput = (id, value) => {
         const input = document.getElementById(id);
         if (input) input.value = value;
       };
 
-      setInput("input-name", user?.name || "");
-      setInput("input-email", user?.email || "");
-      setInput("input-gender", user?.gender || "");
-      setInput("input-age", user?.age || "");
-      setInput("input-class", user?.class || "");
-      setInput("input-stream", user?.stream || "");
-      setInput("input-interests", user?.interests || "");
-      setInput("input-career-goal", user?.careerGoal || "");
-      setInput("input-skills", user?.skills || "");
-      setInput("input-location", user?.location || "");
-
-      setText("profile-name", user?.name || "Guest User");
-      setText("profile-email", user?.email || "guest@example.com");
-      setText("profile-gender", user?.gender || "Not specified");
-      setText("profile-age", user?.age || "Not specified");
-      setText("profile-class", user?.class || "Not specified");
-      setText("profile-stream", user?.stream || "Not decided");
-      setText("profile-interests", user?.interests || "Not provided");
-      setText("profile-careerGoal", user?.careerGoal || "Not specified");
-      setText("profile-skills", user?.skills || "Not provided");
-      setText("profile-location", user?.location || "Not specified");
-
+      setInput("input-name", currentUser?.name || "");
+      setInput("input-email", currentUser?.email || "");
+      setInput("input-gender", currentUser?.gender || "");
+      setInput("input-age", currentUser?.age || "");
+      setInput("input-class", currentUser?.class || "");
+      setInput("input-stream", currentUser?.stream || "");
+      setInput("input-interests", currentUser?.interests || "");
+      setInput("input-career-goal", currentUser?.careerGoal || "");
+      setInput("input-skills", currentUser?.skills || "");
+      setInput("input-location", currentUser?.location || "");
     });
   }
 

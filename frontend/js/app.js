@@ -452,6 +452,7 @@ function initAuthModal() {
 
       saveUser(userObj); // storage.js
       closeModal();
+      document.dispatchEvent(new CustomEvent("profileUpdated", { detail: userObj }));
       setTimeout(renderHeaderUserInfo, 80);
     });
   }
