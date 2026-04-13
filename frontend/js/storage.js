@@ -18,7 +18,7 @@ function isSignedIn() {
 // Sign out
 function signOut() {
   localStorage.removeItem("cb_user");
-  location.reload();
+  window.location.href = "/index.html";
 }
 
 
