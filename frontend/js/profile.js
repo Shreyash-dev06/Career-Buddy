@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!user) {
     alert("Sign In to access Your profile");
-    window.location.href = "index.html";
+    window.location.href = "../../index.html";
     return;
   }
 
