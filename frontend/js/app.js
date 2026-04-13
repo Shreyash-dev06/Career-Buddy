@@ -567,21 +567,28 @@ function initNavbar() {
   }
 }
 
+// ✅ Resolve component path relative to site root (works from any page depth)
+function resolveComponentPath(filename) {
+  const depth = window.location.pathname.replace(/\/[^/]*$/, "").split("/").filter(Boolean).length;
+  const prefix = depth > 0 ? "../".repeat(depth) : "";
+  return prefix + "frontend/html/components/" + filename;
+}
+
 // DOM Ready
 document.addEventListener("DOMContentLoaded", () => {
   // Header
-  loadComponent("../html/components/header.html", "header-placeholder", () => {
+  loadComponent(resolveComponentPath("header.html"), "header-placeholder", () => {
     renderHeaderUserInfo();
     initNavbar();
     window.addEventListener("storage", renderHeaderUserInfo);
   });
 
   // Footer, modal, chatbot
-  loadComponent("../html/components/footer.html", "footer-placeholder");
-  loadComponent("../html/components/auth-modal.html", "modal-placeholder", () => {
+  loadComponent(resolveComponentPath("footer.html"), "footer-placeholder");
+  loadComponent(resolveComponentPath("auth-modal.html"), "modal-placeholder", () => {
     initAuthModal();
   });
-  loadComponent("../html/components/chatbot-widget.html", "chatbot-placeholder", () => {
+  loadComponent(resolveComponentPath("chatbot-widget.html"), "chatbot-placeholder", () => {
     if (typeof initChatbot === "function") initChatbot();
   });
 
